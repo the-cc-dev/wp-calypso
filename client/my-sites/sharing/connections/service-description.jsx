@@ -181,6 +181,11 @@ class SharingServiceDescription extends Component {
 					},
 				}
 			);
+		} else if (
+			'google_photos' === this.props.service.ID &&
+			'must-disconnect' === this.props.status
+		) {
+			description = this.props.translate( 'Please connect again to continue using Google Photos.' );
 		} else if ( 'reconnect' === this.props.status || 'must-disconnect' === this.props.status ) {
 			description = this.props.translate( 'There is an issue connecting to %(service)s.', {
 				args: { service: this.props.service.label },
@@ -190,6 +195,7 @@ class SharingServiceDescription extends Component {
 			description = this.props.descriptions[ this.props.service.ID ].call( this );
 		}
 
+		/* eslint-disable-next-line wpcalypso/jsx-classname-namespace */
 		return <p className="sharing-service__description">{ description }</p>;
 	}
 }
