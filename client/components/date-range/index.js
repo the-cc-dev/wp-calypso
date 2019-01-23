@@ -97,8 +97,8 @@ export class DateRange extends Component {
 		// Build initial state
 		this.state = {
 			popoverVisible: false,
-			staleStartDate: '',
-			staleEndDate: '',
+			staleStartDate: this.props.selectedStartDate,
+			staleEndDate: this.props.selectedEndDate,
 			startDate: startDate,
 			endDate: endDate,
 			staleDatesSaved: false,
@@ -379,6 +379,18 @@ export class DateRange extends Component {
 		} );
 	};
 
+	/**
+	 * Clears the selected start & end dates
+	 */
+	clearDates = () => {
+		this.setState( {
+			startDate: null,
+			endDate: null,
+			textInputStartDate: '',
+			textInputEndDate: '',
+		} );
+	};
+
 	resetDateRange = () => {
 		this.setState( previousState => {
 			const startDate = previousState.initialStartDate;
@@ -523,12 +535,7 @@ export class DateRange extends Component {
 						},
 					} ) }
 				{ startDate && endDate && (
-					<Button
-						className="date-range__info-btn"
-						borderless
-						compact
-						onClick={ this.resetDateRange }
-					>
+					<Button className="date-range__info-btn" borderless compact onClick={ this.clearDates }>
 						{ this.props.translate( '{{icon/}} clear selected dates', {
 							components: { icon: <Gridicon icon="cross-small" /> },
 						} ) }
