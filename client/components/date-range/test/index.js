@@ -738,7 +738,7 @@ describe( 'DateRange', () => {
 			expect( resetExists ).toBe( true );
 		} );
 
-		test( 'Should reset selection when reset UI clicked', () => {
+		test( 'Should clear selections on clear button click', () => {
 			const startDate = moment( '2018-04-28' );
 			const endDate = moment( '2018-05-28' );
 
@@ -764,15 +764,11 @@ describe( 'DateRange', () => {
 				dateToLocaleString( '09/20/2018' )
 			);
 
-			// Now click to "clear" or "reset" the selection
+			// Now click to "clear" the selection
 			resetBtn.simulate( 'click' );
 
-			expect( dateToLocaleString( wrapper.state().startDate ) ).toEqual(
-				dateToLocaleString( '04/28/2018' )
-			);
-			expect( dateToLocaleString( wrapper.state().endDate ) ).toEqual(
-				dateToLocaleString( '05/28/2018' )
-			);
+			expect( dateToLocaleString( wrapper.state().startDate ) ).toEqual( null );
+			expect( dateToLocaleString( wrapper.state().endDate ) ).toEqual( null );
 		} );
 	} );
 
