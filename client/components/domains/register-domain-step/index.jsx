@@ -315,6 +315,7 @@ class RegisterDomainStep extends React.Component {
 
 		if (
 			this.props.selectedSite &&
+			prevProps.selectedSite &&
 			this.props.selectedSite.domain !== prevProps.selectedSite.domain
 		) {
 			this.focusSearchCard();
