@@ -45,6 +45,7 @@ import { getAvailabilityNotice } from 'lib/domains/registration/availability-mes
 import Search from 'components/search';
 import DomainRegistrationSuggestion from 'components/domains/domain-registration-suggestion';
 import DomainTransferSuggestion from 'components/domains/domain-transfer-suggestion';
+import DomainSkipSuggestion from 'components/domains/domain-skip-suggestion';
 import DomainSuggestion from 'components/domains/domain-suggestion';
 import DomainSearchResults from 'components/domains/domain-search-results';
 import ExampleDomainSuggestions from 'components/domains/example-domain-suggestions';
@@ -977,6 +978,7 @@ class RegisterDomainStep extends React.Component {
 		let domainRegistrationSuggestions;
 		let domainUnavailableSuggestion;
 		let suggestions;
+		let domainSkipPurchase;
 
 		if ( this.isLoadingSuggestions() || isEmpty( this.props.products ) ) {
 			domainRegistrationSuggestions = times( INITIAL_SUGGESTION_QUANTITY + 1, function( n ) {
@@ -1008,6 +1010,14 @@ class RegisterDomainStep extends React.Component {
 					tracksButtonClickSource="initial-suggestions-bottom"
 				/>
 			);
+
+			domainSkipPurchase = (
+				<DomainSkipSuggestion
+					selectedSiteSlug={ this.props.selectedSite.slug }
+					suggestion={ this.props.selectedSite.slug }
+					onButtonClick={ this.props.onSkip }
+				/>
+			);
 		}
 
 		return (
@@ -1017,6 +1027,7 @@ class RegisterDomainStep extends React.Component {
 			>
 				{ domainRegistrationSuggestions }
 				{ domainUnavailableSuggestion }
+				{ this.props.showSkipButton && domainSkipPurchase }
 			</div>
 		);
 	}
