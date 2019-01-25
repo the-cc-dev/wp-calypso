@@ -237,6 +237,7 @@ export class PlanFeatures extends Component {
 			selectedPlan,
 			translate,
 			showPlanCreditsApplied,
+			isLaunchPage,
 		} = this.props;
 
 		// move any free plan to last place in mobile view
@@ -303,6 +304,7 @@ export class PlanFeatures extends Component {
 						freePlan={ isFreePlan( planName ) }
 						isInSignup={ isInSignup }
 						isLandingPage={ isLandingPage }
+						isLaunchPage={ isLaunchPage }
 						isPlaceholder={ isPlaceholder }
 						isPopular={ popular }
 						onUpgradeClick={ onUpgradeClick }
@@ -431,6 +433,7 @@ export class PlanFeatures extends Component {
 			disableBloggerPlanWithNonBlogDomain,
 			isInSignup,
 			isLandingPage,
+			isLaunchPage,
 			planProperties,
 			selectedPlan,
 			selectedSiteSlug,
@@ -480,6 +483,7 @@ export class PlanFeatures extends Component {
 						isPopular={ popular }
 						isInSignup={ isInSignup }
 						isLandingPage={ isLandingPage }
+						isLaunchPage={ isLaunchPage }
 						manageHref={ `/plans/my-plan/${ selectedSiteSlug }` }
 						onUpgradeClick={ onUpgradeClick }
 						planName={ planConstantObj.getTitle() }
@@ -564,6 +568,7 @@ export class PlanFeatures extends Component {
 			canPurchase,
 			isInSignup,
 			isLandingPage,
+			isLaunchPage,
 			planProperties,
 			selectedPlan,
 			selectedSiteSlug,
@@ -595,6 +600,7 @@ export class PlanFeatures extends Component {
 						freePlan={ isFreePlan( planName ) }
 						isInSignup={ isInSignup }
 						isLandingPage={ isLandingPage }
+						isLaunchPage={ isLaunchPage }
 						isPlaceholder={ isPlaceholder }
 						isPopular={ popular }
 						manageHref={ `/plans/my-plan/${ selectedSiteSlug }` }
