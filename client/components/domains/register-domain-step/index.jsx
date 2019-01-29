@@ -1015,7 +1015,6 @@ class RegisterDomainStep extends React.Component {
 			domainSkipPurchase = (
 				<DomainSkipSuggestion
 					selectedSiteSlug={ this.props.selectedSite.slug }
-					suggestion={ this.props.selectedSite.slug }
 					onButtonClick={ this.props.onSkip }
 				/>
 			);
