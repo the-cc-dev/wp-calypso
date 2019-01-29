@@ -203,6 +203,7 @@ export function createSiteWithCart(
 			newCartItems,
 			callback,
 			reduxStore,
+			siteSlug,
 			isFreeThemePreselected,
 			themeSlugWithRepo
 		);
@@ -310,7 +311,9 @@ export function getUsernameSuggestion( username, reduxState ) {
 	} );
 }
 
-export function addPlanToCart( callback, { siteSlug }, { cartItem } ) {
+export function addPlanToCart( callback, dependencies, stepProvidedItems, reduxStore ) {
+	const { siteSlug } = dependencies;
+	const { cartItem } = stepProvidedItems;
 	if ( isEmpty( cartItem ) ) {
 		// the user selected the free plan
 		defer( callback );
@@ -318,8 +321,25 @@ export function addPlanToCart( callback, { siteSlug }, { cartItem } ) {
 		return;
 	}
 
+	const providedDependencies = { cartItem };
+
 	const newCartItems = [ cartItem ].filter( item => item );
-	SignupCart.addToCart( siteSlug, newCartItems, error => callback( error, { cartItem } ) );
+
+	processItemCart( providedDependencies, newCartItems, callback, reduxStore, siteSlug, null, null );
+}
+
+export function addDomainToCart( callback, dependencies, stepProvidedItems, reduxStore ) {
+	const { siteId, siteSlug } = dependencies;
+	const { domainItem, googleAppsCartItem } = stepProvidedItems;
+	const providedDependencies = {
+		siteId,
+		siteSlug,
+		domainItem,
+	};
+
+	const newCartItems = [ domainItem, googleAppsCartItem ].filter( item => item );
+
+	processItemCart( providedDependencies, newCartItems, callback, reduxStore, siteSlug, null, null );
 }
 
 function processItemCart(
@@ -327,13 +347,14 @@ function processItemCart(
 	newCartItems,
 	callback,
 	reduxStore,
+	siteSlug,
 	isFreeThemePreselected,
 	themeSlugWithRepo
 ) {
-	const { siteId, siteSlug, domainItem } = providedDependencies;
-	const state = reduxStore.getState();
 	const addToCartAndProceed = () => {
 		let privacyItem = null;
+		const state = reduxStore.getState();
+		const { domainItem } = newCartItems;
 
 		if ( domainItem ) {
 			const { product_slug: productSlug } = domainItem;
@@ -358,7 +379,7 @@ function processItemCart(
 		}
 
 		if ( newCartItems.length ) {
-			SignupCart.addToCart( siteId, newCartItems, function( cartError ) {
+			SignupCart.addToCart( siteSlug, newCartItems, function( cartError ) {
 				callback( cartError, providedDependencies );
 			} );
 		} else {
@@ -379,23 +400,6 @@ function processItemCart(
 	} else {
 		addToCartAndProceed();
 	}
-}
-export function addDomainToCart(
-	callback,
-	dependencies,
-	{ domainItem, googleAppsCartItem },
-	reduxStore
-) {
-	const { cartItem, siteId, siteSlug } = dependencies;
-	const providedDependencies = {
-		siteId,
-		siteSlug,
-		domainItem,
-	};
-
-	const newCartItems = [ cartItem, domainItem, googleAppsCartItem ].filter( item => item );
-
-	processItemCart( providedDependencies, newCartItems, callback, reduxStore, false, null );
 }
 
 export function launchSiteApi( callback, dependencies, {} ) {
