@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
+import moment from 'moment-timezone';
 
 /**
  * Internal dependencies
@@ -65,9 +66,9 @@ class ClonePointStep extends Component {
 		this.setState( { showLog: true } );
 	};
 
-	applySiteOffset = moment => {
+	applySiteOffset = m => {
 		const { timezone, gmtOffset } = this.props;
-		return adjustMoment( { timezone, gmtOffset, moment } );
+		return adjustMoment( { timezone, gmtOffset, moment: m } );
 	};
 
 	changePage = pageNumber => {
@@ -76,7 +77,7 @@ class ClonePointStep extends Component {
 	};
 
 	renderActivityLog = () => {
-		const { siteId, logs, moment, translate } = this.props;
+		const { siteId, logs, translate } = this.props;
 
 		const actualPage = Math.max(
 			1,

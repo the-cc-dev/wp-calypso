@@ -6,6 +6,7 @@ import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
+import moment from 'moment-timezone';
 
 /**
  * Internal dependencies
@@ -15,6 +16,22 @@ import QueryPosts from 'components/data/query-posts';
 import * as postUtils from 'state/posts/utils';
 import { timezone } from 'lib/site/utils';
 import { getPostsForQueryIgnoringPage } from 'state/posts/selectors';
+
+/**
+ * Return date with timezone offset.
+ * If `date` is not defined it returns `now`.
+ *
+ * @param {String|Date} date - date
+ * @param {String} tz - timezone
+ * @return {Moment} moment instance
+ */
+function getOffsetDate( date, tz ) {
+	if ( ! tz ) {
+		return moment( date );
+	}
+
+	return moment( moment.tz( date, tz ) );
+}
 
 const PostScheduleWithOtherPostsIndicated = connect( ( state, { site, query } ) => ( {
 	posts: getPostsForQueryIgnoringPage( state, get( site, 'ID' ), query ) || [],
@@ -47,7 +64,7 @@ export default class PostScheduler extends PureComponent {
 	getFirstDayOfTheMonth( date ) {
 		const tz = timezone( this.props.site );
 
-		return postUtils.getOffsetDate( date, tz ).set( {
+		return getOffsetDate( date, tz ).set( {
 			year: date.year(),
 			month: date.month(),
 			date: 1,

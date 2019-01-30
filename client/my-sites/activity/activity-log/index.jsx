@@ -9,6 +9,7 @@ import config from 'config';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { find, get, includes, isEmpty, isEqual } from 'lodash';
+import moment from 'moment-timezone';
 
 /**
  * Internal dependencies
@@ -356,7 +357,6 @@ class ActivityLog extends Component {
 			enableRewind,
 			filter: { page: requestedPage },
 			logs,
-			moment,
 			rewindState,
 			siteId,
 			siteIsOnFreePlan,

@@ -3,7 +3,7 @@
  */
 var debug = require( 'debug' )( 'i18n-calypso' ),
 	Jed = require( 'jed' ),
-	moment = require( 'moment-timezone' ),
+	moment = require( 'moment' ),
 	sha1 = require( 'hash.js/lib/hash/sha/1' ),
 	EventEmitter = require( 'events' ).EventEmitter,
 	interpolateComponents = require( 'interpolate-components' ).default,
@@ -25,7 +25,7 @@ var translationLookup = [
 	// By default don't modify the options when looking up translations.
 	function( options ) {
 		return options;
-	}
+	},
 ];
 
 var hashCache = {};
@@ -56,11 +56,22 @@ function normalizeTranslateArguments( args ) {
 		i;
 
 	// warn about older deprecated syntax
-	if ( typeof original !== 'string' || args.length > 3 || ( args.length > 2 && typeof args[ 1 ] === 'object' && typeof args[ 2 ] === 'object' ) ) {
-		warn( 'Deprecated Invocation: `translate()` accepts ( string, [string], [object] ). These arguments passed:', simpleArguments( args ), '. See https://github.com/Automattic/i18n-calypso#translate-method' );
+	if (
+		typeof original !== 'string' ||
+		args.length > 3 ||
+		( args.length > 2 && typeof args[ 1 ] === 'object' && typeof args[ 2 ] === 'object' )
+	) {
+		warn(
+			'Deprecated Invocation: `translate()` accepts ( string, [string], [object] ). These arguments passed:',
+			simpleArguments( args ),
+			'. See https://github.com/Automattic/i18n-calypso#translate-method'
+		);
 	}
 	if ( args.length === 2 && typeof original === 'string' && typeof args[ 1 ] === 'string' ) {
-		warn( 'Invalid Invocation: `translate()` requires an options object for plural translations, but passed:', simpleArguments( args ) );
+		warn(
+			'Invalid Invocation: `translate()` requires an options object for plural translations, but passed:',
+			simpleArguments( args )
+		);
 	}
 
 	// options could be in position 0, 1, or 2
@@ -149,9 +160,8 @@ function getTranslation( i18n, options ) {
 	return null;
 }
 
-
 function I18N() {
-	if( ! ( this instanceof I18N ) ) {
+	if ( ! ( this instanceof I18N ) ) {
 		return new I18N();
 	}
 	this.defaultLocaleSlug = 'en';
@@ -160,7 +170,7 @@ function I18N() {
 		jed: undefined,
 		locale: undefined,
 		localeSlug: undefined,
-		translations: LRU( { max: 100 } )
+		translations: LRU( { max: 100 } ),
 	};
 	this.componentUpdateHooks = [];
 	this.translateHooks = [];
@@ -184,7 +194,7 @@ I18N.prototype.moment = moment;
  */
 I18N.prototype.numberFormat = function( number ) {
 	var options = arguments[ 1 ] || {},
-		decimals = ( typeof options === 'number' ) ? options : options.decimals || 0,
+		decimals = typeof options === 'number' ? options : options.decimals || 0,
 		decPoint = options.decPoint || this.state.numberFormatSettings.decimal_point || '.',
 		thousandsSep = options.thousandsSep || this.state.numberFormatSettings.thousands_sep || ',';
 
@@ -198,26 +208,34 @@ I18N.prototype.configure = function( options ) {
 
 I18N.prototype.setLocale = function( localeData ) {
 	if ( localeData && localeData[ '' ] && localeData[ '' ][ 'key-hash' ] ) {
-		var hashLength, minHashLength, maxHashLength, keyHash = localeData[ '' ][ 'key-hash' ];
+		var hashLength,
+			minHashLength,
+			maxHashLength,
+			keyHash = localeData[ '' ][ 'key-hash' ];
 
 		var transform = function( string, hashLength ) {
 			const lookupPrefix = hashLength === false ? '' : String( hashLength );
 			if ( typeof hashCache[ lookupPrefix + string ] !== 'undefined' ) {
 				return hashCache[ lookupPrefix + string ];
 			}
-			var hash = sha1().update( string ).digest('hex');
+			var hash = sha1()
+				.update( string )
+				.digest( 'hex' );
 
 			if ( hashLength ) {
-				return hashCache[ lookupPrefix + string ] = hash.substr( 0, hashLength );
+				return ( hashCache[ lookupPrefix + string ] = hash.substr( 0, hashLength ) );
 			}
 
-			return hashCache[ lookupPrefix + string ] = hash;
+			return ( hashCache[ lookupPrefix + string ] = hash );
 		};
 
 		var generateLookup = function( hashLength ) {
 			return function( options ) {
 				if ( options.context ) {
-					options.original = transform( options.context + String.fromCharCode( 4 ) + options.original, hashLength );
+					options.original = transform(
+						options.context + String.fromCharCode( 4 ) + options.original,
+						hashLength
+					);
 					delete options.context;
 				} else {
 					options.original = transform( options.original, hashLength );
@@ -225,7 +243,7 @@ I18N.prototype.setLocale = function( localeData ) {
 
 				return options;
 			};
-		}
+		};
 
 		if ( keyHash.substr( 0, 4 ) === 'sha1' ) {
 			if ( keyHash.length === 4 ) {
@@ -266,8 +284,8 @@ I18N.prototype.setLocale = function( localeData ) {
 
 	this.state.jed = new Jed( {
 		locale_data: {
-			messages: this.state.locale
-		}
+			messages: this.state.locale,
+		},
 	} );
 
 	moment.locale( this.state.localeSlug );
@@ -307,21 +325,19 @@ I18N.prototype.getLocaleSlug = function() {
 	return this.state.localeSlug;
 };
 
-
 /**
  * Adds new translations to the locale data, overwriting any existing translations with a matching key
  **/
 I18N.prototype.addTranslations = function( localeData ) {
 	for ( var prop in localeData ) {
 		if ( prop !== '' ) {
-			this.state.jed.options.locale_data.messages[prop] = localeData[prop];
+			this.state.jed.options.locale_data.messages[ prop ] = localeData[ prop ];
 		}
 	}
 
 	this.state.translations.clear();
 	this.stateObserver.emit( 'change' );
 };
-
 
 /**
  * Checks whether the given original has a translation. Parameters are the same as for translate().
@@ -333,7 +349,7 @@ I18N.prototype.addTranslations = function( localeData ) {
  */
 I18N.prototype.hasTranslation = function() {
 	return !! getTranslation( this, normalizeTranslateArguments( arguments ) );
-}
+};
 
 /**
  * Exposes single translation method, which is converted into its respective Jed method.
@@ -376,7 +392,7 @@ I18N.prototype.translate = function() {
 
 	// handle any string substitution
 	if ( options.args ) {
-		sprintfArgs = ( Array.isArray( options.args ) ) ? options.args.slice( 0 ) : [ options.args ];
+		sprintfArgs = Array.isArray( options.args ) ? options.args.slice( 0 ) : [ options.args ];
 		sprintfArgs.unshift( translation );
 		try {
 			translation = Jed.sprintf.apply( Jed, sprintfArgs );
@@ -398,7 +414,7 @@ I18N.prototype.translate = function() {
 		translation = interpolateComponents( {
 			mixedString: translation,
 			components: options.components,
-			throwErrors: this.throwErrors
+			throwErrors: this.throwErrors,
 		} );
 	}
 

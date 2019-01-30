@@ -296,6 +296,7 @@ function getWebpackConfig( { cssFilename, externalizeWordPressPackages = false }
 		resolve: {
 			extensions: [ '.json', '.js', '.jsx' ],
 			modules: [ path.join( __dirname, 'client' ), 'node_modules' ],
+			symlinks: false,
 			alias: Object.assign(
 				{
 					'gridicons/example': 'gridicons/dist/example',

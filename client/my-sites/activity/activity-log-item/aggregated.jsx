@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { omit } from 'lodash';
 import React, { Component, Fragment } from 'react';
+import moment from 'moment-timezone';
+
 /**
  * Internal dependencies
  */
@@ -33,7 +35,6 @@ class ActivityLogAggregatedItem extends Component {
 		const {
 			activity: { firstPublishedDate, lastPublishedDate },
 			filter,
-			moment,
 			timezone,
 		} = this.props;
 		const newFilter = Object.assign( {}, omit( filter, [ 'dateRange', 'on' ] ), {
@@ -127,7 +128,6 @@ class ActivityLogAggregatedItem extends Component {
 			disableBackup,
 			disableRestore,
 			gmtOffset,
-			moment,
 			rewindState,
 			siteId,
 			timezone,
