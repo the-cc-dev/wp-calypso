@@ -134,7 +134,7 @@ export class SiteInformation extends Component {
 				</Button>
 				{ abtest( 'skipBusinessInformation' ) === 'show' && (
 					<Button className="site-information__skip-button" borderless onClick={ this.handleSkip }>
-						{ translate( 'Skip this' ) }
+						{ translate( 'Skip' ) }
 					</Button>
 				) }
 			</>
