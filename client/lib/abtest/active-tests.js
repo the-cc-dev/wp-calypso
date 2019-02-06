@@ -72,15 +72,6 @@ export default {
 		allowExistingUsers: true,
 		localeTargets: 'any',
 	},
-	jetpackFreePlanButtonPosition: {
-		datestamp: '20181212',
-		variations: {
-			locationTop: 50,
-			locationBottom: 50,
-		},
-		defaultVariation: 'locationBottom',
-		allowExistingUsers: true,
-	},
 	showConciergeSessionUpsell: {
 		datestamp: '20181214',
 		variations: {
@@ -91,7 +82,7 @@ export default {
 		allowExistingUsers: true,
 	},
 	showConciergeSessionUpsellNonGSuite: {
-		datestamp: '20181228',
+		datestamp: '20190104',
 		variations: {
 			skip: 50,
 			show: 50,

@@ -1,6 +1,7 @@
 {
   "production": [
     "contact-form",
+    "gif",
     "map",
     "markdown",
     "publicize",
@@ -12,9 +13,10 @@
   ],
   "beta": [
     "mailchimp",
-    "gif",
-    "vr",
     "contact-info",
-    "wordads"
+    "wordads",
+    "videopress",
+    "vr",
+    "business-hours"
   ]
 }
