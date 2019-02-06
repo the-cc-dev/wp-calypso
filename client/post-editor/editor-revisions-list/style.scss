@@ -126,7 +126,7 @@
 	&.button[disabled],
 	&.button.disabled {
 		background: transparent;
-		color: lighten( $gray-text-min, 30% );
+		color: var( --color-neutral-0 );
 		border-color: darken( $sidebar-bg-color, 5% );
 	}
 	.gridicon {
@@ -256,7 +256,7 @@
 
 	.editor-revisions-list__revision.is-selected > &,
 	.editor-revisions-list__revision.is-selected > &:hover {
-		background: $gray-text-min;
+		background: var( --color-text-subtle );
 
 		// NOTE: force with a heavy specificity white text, see discussion on
 		// https://github.com/Automattic/wp-calypso/pull/13367#discussion_r114108253
