@@ -15,7 +15,6 @@ import {
 	get,
 	includes,
 	indexOf,
-	isEmpty,
 	isEqual,
 	kebabCase,
 	last,
@@ -51,8 +50,6 @@ import { isDomainRegistration, isDomainTransfer, isDomainMapping } from 'lib/pro
 import SignupActions from 'lib/signup/actions';
 import SignupFlowController from 'lib/signup/flow-controller';
 import { disableCart } from 'lib/upgrades/actions';
-
-import { getSiteTypePropertyValue } from 'lib/signup/site-type';
 
 // State actions and selectors
 import { loadTrackingTool } from 'state/analytics/actions';
@@ -137,10 +134,6 @@ class Signup extends React.Component {
 
 		let providedDependencies;
 
-		this.submitQueryDependencies();
-
-		// this.removeFulfilledSteps( this.props );
-
 		if ( flow.providesDependenciesInQuery ) {
 			providedDependencies = pick( queryObject, flow.providesDependenciesInQuery );
 		}
@@ -153,6 +146,8 @@ class Signup extends React.Component {
 			reduxStore: this.context.store,
 			onComplete: this.handleSignupFlowControllerCompletion,
 		} );
+
+		this.removeFulfilledSteps( this.props );
 
 		this.updateShouldShowLoadingScreen();
 
@@ -179,7 +174,7 @@ class Signup extends React.Component {
 	UNSAFE_componentWillReceiveProps( nextProps ) {
 		const { signupDependencies, stepName, flowName, progress } = nextProps;
 
-		// this.removeFulfilledSteps( nextProps );
+		this.removeFulfilledSteps( nextProps );
 
 		if ( this.props.stepName !== stepName ) {
 			this.recordStep( stepName, flowName );
@@ -263,68 +258,7 @@ class Signup extends React.Component {
 		}
 	};
 
-	submitQueryDependencies = () => {
-		if ( isEmpty( this.props.initialContext && this.props.initialContext.query ) ) {
-			return;
-		}
-
-		const {
-			initialContext: {
-				query: { vertical, site_type: siteType },
-			},
-			flowName,
-		} = this.props;
-
-		const flowSteps = flows.getFlow( flowName ).steps;
-
-		// `vertical` query parameter
-		if ( vertical && -1 === flowSteps.indexOf( 'survey' ) ) {
-			debug( 'From query string: vertical = %s', vertical );
-
-			const siteTopicStepName = 'site-topic';
-
-			this.props.setSurvey( {
-				vertical,
-				otherText: '',
-			} );
-			SignupActions.submitSignupStep( { stepName: 'survey' }, [], {
-				surveySiteType: 'blog',
-				surveyQuestion: vertical,
-			} );
-
-			this.props.submitSiteVertical( { name: vertical }, siteTopicStepName );
-
-			// Track our landing page verticals
-			// if ( isValidLandingPageVertical( vertical ) ) {
-			// 	analytics.tracks.recordEvent( 'calypso_signup_vertical_landing_page', {
-			// 		vertical,
-			// 		flow: flowName,
-			// 	} );
-			// }
-
-			flows.excludeStep( siteTopicStepName );
-
-			this.recordExcludeStepEvent( siteTopicStepName, vertical );
-		}
-
-		//`site_type` query parameter
-		const siteTypeValue = getSiteTypePropertyValue( 'slug', siteType, 'slug' );
-		if ( siteTypeValue ) {
-			debug( 'From query string: site_type = %s', siteType );
-			debug( 'Site type value = %s', siteTypeValue );
-
-			const siteTypeStepName = 'site-type';
-
-			this.props.submitSiteType( siteTypeValue );
-
-			flows.excludeStep( siteTypeStepName );
-
-			// this.recordExcludeStepEvent( siteTypeStepName, siteTypeValue );
-		}
-	};
-
 	processFulfilledSteps = ( stepName, nextProps ) => {
-		// console.log('in processFulfilledSteps, stepName: ' + stepName);
 		const isFulfilledCallback = steps[ stepName ].fulfilledStepCallback;
 		isFulfilledCallback && isFulfilledCallback( stepName, nextProps );
 	};
@@ -332,10 +266,8 @@ class Signup extends React.Component {
 	removeFulfilledSteps = nextProps => {
 		const { flowName, stepName } = nextProps;
 		const flowSteps = flows.getFlow( flowName ).steps;
-		console.log( flowSteps );
 		map( flowSteps, flowStepName => this.processFulfilledSteps( flowStepName, nextProps ) );
 
-		console.log( 'currentStepName: ' + stepName );
 		if ( includes( flows.excludedSteps, stepName ) ) {
 			this.goToNextStep( flowName );
 		}
