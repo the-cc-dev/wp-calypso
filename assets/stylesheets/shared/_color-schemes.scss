@@ -281,8 +281,6 @@
 
 	// TODO: once we replace the current default theme with Classic Bright, we can remove these and increase consistency by using the sidebar colors instead
 	--button-is-borderless-color: #{$gray-dark};
-	--count-border-color: #{$gray-dark};
-	--count-color: #{$gray-dark};
 	--profile-gravatar-user-secondary-info-color: #{$gray-dark};
 }
 
@@ -332,8 +330,6 @@
 
 		// TODO: once we replace the current default theme with Classic Bright, we can remove these and increase consistency by using the sidebar colors instead								
 		--button-is-borderless-color: #{$gray-text-min};
-		--count-border-color: #{$gray};
-		--count-color: #{$gray-text-min};
 		--profile-gravatar-user-secondary-info-color: #{$muriel-gray-500};
 	}
 
@@ -422,8 +418,6 @@
 
 		// TODO: once we replace the current default theme with Classic Bright, we can remove these and increase consistency by using the sidebar colors instead
 		--button-is-borderless-color: #{$gray-dark};
-		--count-border-color: #{$gray-dark};
-		--count-color: #{$gray-dark};
 		--profile-gravatar-user-secondary-info-color: #{$gray-dark};
 	}
 }
