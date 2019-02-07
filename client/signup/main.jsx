@@ -259,6 +259,10 @@ class Signup extends React.Component {
 	};
 
 	processFulfilledSteps = ( stepName, nextProps ) => {
+		if ( includes( flows.excludedSteps, stepName ) ) {
+			return;
+		}
+
 		const isFulfilledCallback = steps[ stepName ].fulfilledStepCallback;
 		isFulfilledCallback && isFulfilledCallback( stepName, nextProps );
 	};
