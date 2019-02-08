@@ -118,9 +118,6 @@ class Signup extends React.Component {
 			plans: false,
 			previousFlowName: null,
 		};
-
-		this.isPlanStepFulfilled = false;
-		this.isDomainStepFulfilled = false;
 	}
 
 	UNSAFE_componentWillMount() {
