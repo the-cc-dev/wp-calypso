@@ -13,11 +13,13 @@ import {
 	defer,
 	find,
 	get,
+	includes,
 	indexOf,
 	isEmpty,
 	isEqual,
 	kebabCase,
 	last,
+	map,
 	pick,
 	startsWith,
 } from 'lodash';
@@ -133,11 +135,13 @@ class Signup extends React.Component {
 		this.signupFlowController = new SignupFlowController( {
 			flowName: this.props.flowName,
 			providedDependencies,
+
 			reduxStore: this.context.store,
 			onComplete: this.handleSignupFlowControllerCompletion,
 		} );
 
-		this.submitQueryDependencies();
+		// this.submitQueryDependencies();
+		this.removeFulfilledSteps( this.props );
 
 		this.updateShouldShowLoadingScreen();
 
@@ -250,6 +254,26 @@ class Signup extends React.Component {
 			step,
 			value,
 		} );
+	};
+
+	processFulfilledSteps = ( stepName, nextProps ) => {
+		if ( includes( flows.excludedSteps, stepName ) ) {
+			return;
+		}
+
+		const isFulfilledCallback = steps[ stepName ].fulfilledStepCallback;
+		const defaultDependency = steps[ stepName ].defaultDependency;
+		isFulfilledCallback && isFulfilledCallback( stepName, defaultDependency, nextProps );
+	};
+
+	removeFulfilledSteps = nextProps => {
+		const { flowName, stepName } = nextProps;
+		const flowSteps = flows.getFlow( flowName ).steps;
+		map( flowSteps, flowStepName => this.processFulfilledSteps( flowStepName, nextProps ) );
+
+		if ( includes( flows.excludedSteps, stepName ) ) {
+			this.goToNextStep( flowName );
+		}
 	};
 
 	submitQueryDependencies = () => {

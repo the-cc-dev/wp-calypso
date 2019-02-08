@@ -31,12 +31,17 @@ import { getSiteGoals } from 'state/signup/steps/site-goals/selectors';
 import { getSiteStyle } from 'state/signup/steps/site-style/selectors';
 import { getUserExperience } from 'state/signup/steps/user-experience/selectors';
 import { requestSites } from 'state/sites/actions';
-import { supportsPrivacyProtectionPurchase } from 'lib/cart-values/cart-items';
+import {
+	supportsPrivacyProtectionPurchase,
+	planItem as getCartItemForPlan,
+} from 'lib/cart-values/cart-items';
 import { getProductsList } from 'state/products-list/selectors';
 import { getSelectedImportEngine, getNuxUrlInputValue } from 'state/importer-nux/temp-selectors';
 import { normalizeImportUrl } from 'state/importer-nux/utils';
 import { promisify } from '../../utils';
 import { getSiteTypePropertyValue } from 'lib/signup/site-type';
+import SignupActions from './actions';
+import flows from 'signup/config/flows';
 
 const debug = debugFactory( 'calypso:signup:step-actions' );
 
@@ -479,4 +484,20 @@ export function createSite( callback, { themeSlugWithRepo }, { site }, reduxStor
 			callback( isEmpty( errors ) ? undefined : [ errors ], providedDependencies );
 		}
 	} );
+}
+
+export function isPlanFulfilled( stepName, defaultDependency, nextProps ) {
+	const { isPaidPlan, sitePlanSlug } = nextProps;
+	if ( isPaidPlan || defaultDependency ) {
+		flows.excludeStep( stepName );
+	}
+
+	if ( defaultDependency ) {
+		const cartItem = getCartItemForPlan( defaultDependency.cartItem );
+		SignupActions.submitSignupStep( { stepName, cartItem }, [], { cartItem } );
+	} else {
+		const cartItem = undefined;
+		SignupActions.submitSignupStep( { stepName: stepName, cartItem }, [], { cartItem } );
+		// recordExcludeStepEvent( stepName, sitePlanSlug );
+	}
 }

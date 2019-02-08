@@ -58,6 +58,7 @@ export default {
 	'domains-theme-preselected': DomainsStepComponent,
 	'from-url': ImportURLStepComponent,
 	plans: PlansStepComponent,
+	'plans-personal': PlansStepComponent,
 	'plans-store-nux': PlansAtomicStoreComponent,
 	'plans-site-selected': PlansStepWithoutFreePlan,
 	site: SiteComponent,
