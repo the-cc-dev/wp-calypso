@@ -266,42 +266,12 @@ export class PlanFeaturesHeader extends Component {
 							discounted
 						/>
 					</div>
-					{ this.renderCreditLabel() }
 				</span>
 			);
 		}
 
 		return (
 			<PlanPrice currencyCode={ currencyCode } rawPrice={ fullPrice } isInSignup={ isInSignup } />
-		);
-	}
-
-	renderCreditLabel() {
-		const {
-			availableForPurchase,
-			currentSitePlan,
-			discountPrice,
-			isJetpack,
-			planType,
-			rawPrice,
-			showPlanCreditsApplied,
-			translate,
-		} = this.props;
-
-		if (
-			! showPlanCreditsApplied ||
-			! availableForPurchase ||
-			planMatches( planType, { type: TYPE_FREE } ) ||
-			planType === currentSitePlan.productSlug ||
-			isJetpack ||
-			! discountPrice ||
-			discountPrice >= rawPrice
-		) {
-			return null;
-		}
-
-		return (
-			<span className="plan-features__header-credit-label">{ translate( 'Credit applied' ) }</span>
 		);
 	}
 

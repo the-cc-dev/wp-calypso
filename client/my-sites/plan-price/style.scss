@@ -48,7 +48,7 @@
 	font-size: 12px;
 }
 
-.plan-price.is-discounted .plan-price__currency-symbol {
+.plan-price.is-discounted .plan-price__currency-symbol, .plan-price.is-discounted .plan-price__integer {
 	color: var( --color-success );
 }
 
