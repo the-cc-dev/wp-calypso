@@ -23,6 +23,7 @@ import {
 } from './hooks/components/media-upload/utils';
 import { replaceHistory, setRoute } from 'state/ui/actions';
 import getCurrentRoute from 'state/selectors/get-current-route';
+import wpcom from 'lib/wp';
 
 /**
  * Style dependencies
@@ -151,14 +152,21 @@ const mapStateToProps = ( state, { postId, postType } ) => {
 	const siteSlug = getSiteSlug( state, siteId );
 	const currentRoute = getCurrentRoute( state );
 
+	let queryArgs = pickBy( {
+		post: postId,
+		action: postId && 'edit', // If postId is set, open edit view.
+		post_type: postType !== 'post' && postType, // Use postType if it's different than post.
+		calypsoify: 1,
+		'frame-nonce': getSiteOption( state, siteId, 'frame_nonce' ) || '',
+	} );
+
+	// needed for loading the editor in SU sessions
+	if ( wpcom.addSupportParams ) {
+		queryArgs = wpcom.addSupportParams( queryArgs );
+	}
+
 	const iframeUrl = addQueryArgs(
-		pickBy( {
-			post: postId,
-			action: postId && 'edit', // If postId is set, open edit view.
-			post_type: postType !== 'post' && postType, // Use postType if it's different than post.
-			calypsoify: 1,
-			'frame-nonce': getSiteOption( state, siteId, 'frame_nonce' ) || '',
-		} ),
+		queryArgs,
 		getSiteAdminUrl( state, siteId, postId ? 'post.php' : 'post-new.php' )
 	);
 
