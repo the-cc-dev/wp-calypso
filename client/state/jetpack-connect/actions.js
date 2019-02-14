@@ -33,6 +33,8 @@ import {
 	JETPACK_CONNECT_DISMISS_URL_STATUS,
 	JETPACK_CONNECT_QUERY_SET,
 	JETPACK_CONNECT_RETRY_AUTH,
+	JETPACK_CONNECT_SAVE_SITE_TYPE,
+	JETPACK_CONNECT_SAVE_SITE_TOPIC,
 	JETPACK_CONNECT_SSO_AUTHORIZE_ERROR,
 	JETPACK_CONNECT_SSO_AUTHORIZE_REQUEST,
 	JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS,
@@ -506,5 +508,21 @@ export function completeFlow( site ) {
 			type: JETPACK_CONNECT_COMPLETE_FLOW,
 			site,
 		} );
+	};
+}
+
+export function saveSiteType( siteId, siteType ) {
+	return {
+		type: JETPACK_CONNECT_SAVE_SITE_TYPE,
+		siteId,
+		siteType,
+	};
+}
+
+export function saveSiteTopic( siteId, siteTopic ) {
+	return {
+		type: JETPACK_CONNECT_SAVE_SITE_TOPIC,
+		siteId,
+		siteTopic,
 	};
 }
